@@ -852,6 +852,50 @@
             }
         }
 
+    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQjYnD-2MNjff6iU29tYpgg39tNIjxbhPeGiqQ9wm4ENdWj5p_T18azsMDKyrQzSMODxsNipEbLaAQ/pub?output=csv";
+
+// โหลดข้อมูลอัตโนมัติจาก Google Sheets
+fetch(sheetURL)
+    .then(response => response.text())
+    .then(csvData => {
+
+        Papa.parse(csvData, {
+            header: true,
+            skipEmptyLines: true,
+
+            complete: function(results) {
+
+                if (results.data && results.data.length > 0) {
+
+                    parseCSVData(results.data);
+
+                    showNotification(
+                        'เชื่อมต่อ Google Sheets สำเร็จ!',
+                        'success'
+                    );
+
+                    document.getElementById('onlineStatusBadge').innerHTML = `
+                        <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-xs px-2.5 py-1 rounded-full border border-emerald-300">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                            ออนไลน์เรียลไทม์
+                        </span>
+                    `;
+                }
+
+            }
+        });
+
+    })
+    .catch(error => {
+
+        console.error(error);
+
+        showNotification(
+            'เชื่อมต่อ Google Sheets ไม่สำเร็จ',
+            'error'
+        );
+
+    });   
         function processFile(file) {
             Papa.parse(file, {
                 header: true,
