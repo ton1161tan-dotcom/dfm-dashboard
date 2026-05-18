@@ -83,7 +83,7 @@
                 <i data-lucide="info" class="w-5 h-5 text-blue-600 mt-0.5 shrink-0"></i>
                 <div class="text-sm text-blue-900">
                     <span class="font-semibold">ระบบจัดเก็บข้อมูลออนไลน์:</span> คุณสามารถอัปโหลดไฟล์แผนงานและคลิก <b>"แชร์ข้อมูลขึ้นคลาวด์"</b> เพื่ออัปเดตข้อมูลแบบสดใหม่ให้ทีมงานทุกคนเปิดดูพร้อมกันได้แบบ Real-time 
-                    (ประเมินทะเบียนไม่ซ้ำ และยึดสถานะ <b>"วิ่งงานปกติ"</b>)
+                    (ประเมินทะเบียนไม่ซ้ำ และยึดสถานะ <b>"วิ่งงานปกติ"</b> โดยแต่ละ Vendor ต้องมีอัตราวิ่งงานปกติไม่ต่ำกว่า <b>85%</b> ของรถพร้อมวิ่งงาน)
                 </div>
             </div>
             <!-- Save Online Trigger Button -->
@@ -182,10 +182,10 @@
                 </div>
             </div>
 
-            <!-- Target Standard Card -->
+            <!-- Target Standard Card (SLA 85% Target) -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
                 <div class="space-y-1">
-                    <span class="text-xs font-semibold text-indigo-600 tracking-wider">เป้าหมายมาตรฐาน (SLA)</span>
+                    <span class="text-xs font-semibold text-indigo-600 tracking-wider">เป้าหมายมาตรฐาน (SLA 85%)</span>
                     <h3 id="kpiSlaValue" class="text-3xl font-extrabold text-indigo-600">0.0%</h3>
                     <p id="kpiSlaStatus" class="text-xs font-medium flex items-center gap-1">
                         -
@@ -203,7 +203,7 @@
             <!-- 1. Overall Ready Percentage Card -->
             <div class="bg-white p-5 lg:p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center justify-between min-h-[350px]">
                 <div class="w-full text-left">
-                    <h3 class="font-bold text-slate-800 text-sm">1. ภาพรวมอัตราความพร้อมวิ่งงาน (SLA %)</h3>
+                    <h3 class="font-bold text-slate-800 text-sm">1. ภาพรวมอัตราพร้อมวิ่งงานปกติ (SLA %)</h3>
                     <p class="text-xs text-slate-400 mb-4">คิดจาก: วิ่งงานปกติ / (วิ่งปกติ + ลา + หยุดพักปกติ)</p>
                 </div>
                 
@@ -230,8 +230,8 @@
             <!-- 2. Ready % by Vehicle Type Chart Card -->
             <div class="bg-white p-5 lg:p-6 rounded-2xl border border-slate-200/80 shadow-sm lg:col-span-2 flex flex-col justify-between min-h-[350px]">
                 <div>
-                    <h3 class="font-bold text-slate-800 text-sm">2. ความพร้อมวิ่งงานแยกตามประเภทรถ (%)</h3>
-                    <p class="text-xs text-slate-400 mb-4">สัดส่วนความพร้อมให้บริการแยกประเภทรถตามสูตรมาตรฐาน SLA ใหม่</p>
+                    <h3 class="font-bold text-slate-800 text-sm">2. อัตราพร้อมวิ่งงานปกติแยกตามประเภทรถ (%)</h3>
+                    <p class="text-xs text-slate-400 mb-4">สัดส่วนความพร้อมให้บริการแยกประเภทรถตามสูตรมาตรฐาน SLA (เป้าหมาย 85%)</p>
                 </div>
                 <div class="flex-1 min-h-[220px] relative">
                     <canvas id="typeChart"></canvas>
@@ -249,7 +249,7 @@
                     </h3>
                     <p class="text-xs text-slate-500 mt-1">
                         <b>รถพร้อมวิ่งงาน (คัน)</b> = รถวิ่งงานปกติ + ลากิจ + ลาป่วย + หยุดพักปกติ | 
-                        <b>SLA %</b> = รถวิ่งงานปกติ / รถพร้อมวิ่งงาน
+                        <b>อัตราพร้อมวิ่งงานปกติ %</b> = รถวิ่งงานปกติ / รถพร้อมวิ่งงาน
                     </p>
                 </div>
 
@@ -291,8 +291,8 @@
                             <th class="px-4 py-4 text-center font-bold text-indigo-700 bg-indigo-50/50">รถไม่มีคนขับ (คัน)</th>
                             <th class="px-4 py-4 text-center font-bold text-slate-600 bg-slate-100/50">อื่นๆ (คัน)</th>
                             <th class="px-4 py-4 text-center font-bold text-slate-900 bg-slate-100">รวมทั้งหมด (คัน)</th>
-                            <th class="px-6 py-4 text-center font-bold text-slate-700">เปอร์เซ็นต์พร้อมวิ่ง (SLA)</th>
-                            <th class="px-6 py-4 text-center font-bold text-slate-700">สถานะมาตรฐาน (95%)</th>
+                            <th class="px-6 py-4 text-center font-bold text-slate-700">เปอร์เซ็นต์พร้อมวิ่งงานปกติ</th>
+                            <th class="px-6 py-4 text-center font-bold text-slate-700">สถานะมาตรฐาน (85%)</th>
                         </tr>
                     </thead>
                     <tbody id="vendorStatusTableBody" class="divide-y divide-slate-200 text-slate-700">
@@ -899,8 +899,7 @@ fetch(sheetURL)
             'error'
         );
 
-    });   
-        function processFile(file) {
+         function processFile(file) {
             Papa.parse(file, {
                 header: true,
                 skipEmptyLines: true,
@@ -1131,7 +1130,7 @@ fetch(sheetURL)
             document.getElementById('kpiReadyPercent').innerText = `${readyPercent}% ของรถนำมาวางแผน`;
             document.getElementById('kpiUnreadyPercent').innerText = `${unreadyPercent}% มีปัญหาการจัดส่ง/เสีย`;
 
-            // Display standard SLA inside KPI Standard and overall gauge center
+            // Display standard SLA inside KPI Standard and overall gauge center (Target 85%)
             document.getElementById('kpiSlaValue').innerText = `${globalSlaPercent}%`;
             document.getElementById('overallPercentage').innerText = `${globalSlaPercent}%`;
             document.getElementById('legendReady').innerText = `${globalRunNormal} คัน`;
@@ -1141,12 +1140,12 @@ fetch(sheetURL)
             if (globalReadyDenominator === 0) {
                 slaStatus.className = "text-xs text-slate-400 font-medium flex items-center gap-1";
                 slaStatus.innerHTML = `<i data-lucide="minus" class="w-3.5 h-3.5"></i> ไม่มีรถพร้อมวิ่งในระบบ`;
-            } else if (parseFloat(globalSlaPercent) >= 95.0) {
+            } else if (parseFloat(globalSlaPercent) >= 85.0) {
                 slaStatus.className = "text-xs text-emerald-600 font-semibold flex items-center gap-1 animate-pulse";
-                slaStatus.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5"></i> ผ่านเกณฑ์มาตรฐานภาพรวม`;
+                slaStatus.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5"></i> ผ่านเกณฑ์มาตรฐานภาพรวม (85%)`;
             } else {
                 slaStatus.className = "text-xs text-rose-500 font-semibold flex items-center gap-1";
-                slaStatus.innerHTML = `<i data-lucide="x-circle" class="w-3.5 h-3.5"></i> ต่ำกว่ามาตรฐานเป้าหมาย!`;
+                slaStatus.innerHTML = `<i data-lucide="x-circle" class="w-3.5 h-3.5"></i> ต่ำกว่ามาตรฐานเป้าหมาย! (85%)`;
             }
             lucide.createIcons();
         }
@@ -1254,10 +1253,10 @@ fetch(sheetURL)
                 data: {
                     labels: typeLabels,
                     datasets: [{
-                        label: 'เปอร์เซ็นต์ SLA (%)',
+                        label: 'เปอร์เซ็นต์ความพร้อมวิ่งปกติ (%)',
                         data: typeReadyPercentages,
-                        backgroundColor: typeReadyPercentages.map(p => p >= 95 ? 'rgba(16, 185, 129, 0.85)' : 'rgba(244, 63, 94, 0.85)'),
-                        borderColor: typeReadyPercentages.map(p => p >= 95 ? '#10b981' : '#f43f5e'),
+                        backgroundColor: typeReadyPercentages.map(p => p >= 85 ? 'rgba(16, 185, 129, 0.85)' : 'rgba(244, 63, 94, 0.85)'),
+                        borderColor: typeReadyPercentages.map(p => p >= 85 ? '#10b981' : '#f43f5e'),
                         borderWidth: 1.5,
                         borderRadius: 8,
                         barThickness: 32,
@@ -1283,7 +1282,7 @@ fetch(sheetURL)
                             callbacks: {
                                 label: function(context) {
                                     const index = context.dataIndex;
-                                    return ` อัตรา SLA: ${context.raw}% (ตัวหารพร้อมวิ่งรวม: ${typeTotalCounts[index]} คัน)`;
+                                    return ` อัตราความพร้อมวิ่งปกติ: ${context.raw}% (ตัวหารพร้อมวิ่งรวม: ${typeTotalCounts[index]} คัน)`;
                                 }
                             }
                         }
@@ -1292,7 +1291,7 @@ fetch(sheetURL)
             });
         }
 
-        // --- NEW/UPDATED: Section 3 Render Vendor Status Table with Custom Filters ---
+        // --- Section 3 Render Vendor Status Table with Custom Filters ---
         window.renderVendorStatusTable = function() {
             const tableBody = document.getElementById('vendorStatusTableBody');
             
@@ -1399,8 +1398,8 @@ fetch(sheetURL)
                 // SLA % = วิ่งงานปกติ / รถพร้อมวิ่งงาน (คัน)
                 const readyPercent = readyTotalCount > 0 ? ((runNormalCount / readyTotalCount) * 100).toFixed(1) : "0.0";
                 
-                // SLA Requirement threshold is 95%
-                const isSlaPassed = parseFloat(readyPercent) >= 95.0;
+                // SLA Requirement threshold updated to 85%
+                const isSlaPassed = parseFloat(readyPercent) >= 85.0;
                 const statusBadge = isSlaPassed 
                     ? `<span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full"><i data-lucide="check" class="w-3.5 h-3.5"></i> ผ่านเกณฑ์</span>`
                     : `<span class="inline-flex items-center gap-1 bg-rose-100 text-rose-800 text-xs font-bold px-2.5 py-1 rounded-full"><i data-lucide="x" class="w-3.5 h-3.5"></i> ต่ำกว่าเกณฑ์</span>`;
@@ -1435,12 +1434,12 @@ fetch(sheetURL)
                 </tr>`;
             });
 
-            // Append Grand Total Row
+            // Append Grand Total Row (Target 85%)
             const gPercent = gReadyTotal > 0 ? ((gRunNormal / gReadyTotal) * 100).toFixed(1) : "0.0";
-            const gPassed = parseFloat(gPercent) >= 95.0;
+            const gPassed = parseFloat(gPercent) >= 85.0;
             const gBadge = gPassed
-                ? `<span class="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">ผ่านภาพรวม</span>`
-                : `<span class="bg-rose-600 text-white text-xs font-bold px-3 py-1 rounded-full">ไม่ผ่านภาพรวม</span>`;
+                ? `<span class="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">ผ่านภาพรวม (85%)</span>`
+                : `<span class="bg-rose-600 text-white text-xs font-bold px-3 py-1 rounded-full">ไม่ผ่านภาพรวม (85%)</span>`;
 
             rowsHtml += `<tr class="bg-slate-100 font-extrabold text-slate-900 border-t-2 border-slate-300">
                 <td class="px-6 py-4">ยอดรวมแผนกวิ่งรถทั้งหมด</td>
