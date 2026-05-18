@@ -186,7 +186,7 @@
             <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
                 <div class="space-y-1">
                     <span class="text-xs font-semibold text-indigo-600 tracking-wider">เป้าหมายมาตรฐาน (SLA)</span>
-                    <h3 class="text-3xl font-extrabold text-indigo-600">95.0%</h3>
+                    <h3 id="kpiSlaValue" class="text-3xl font-extrabold text-indigo-600">0.0%</h3>
                     <p id="kpiSlaStatus" class="text-xs font-medium flex items-center gap-1">
                         -
                     </p>
@@ -203,25 +203,25 @@
             <!-- 1. Overall Ready Percentage Card -->
             <div class="bg-white p-5 lg:p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center justify-between min-h-[350px]">
                 <div class="w-full text-left">
-                    <h3 class="font-bold text-slate-800 text-sm">1. ภาพรวมรถพร้อมวิ่งงานจากทั้งหมด (%)</h3>
-                    <p class="text-xs text-slate-400 mb-4">สัดส่วนของรถที่อยู่ในสถานะ "วิ่งงานปกติ"</p>
+                    <h3 class="font-bold text-slate-800 text-sm">1. ภาพรวมอัตราความพร้อมวิ่งงาน (SLA %)</h3>
+                    <p class="text-xs text-slate-400 mb-4">คิดจาก: วิ่งงานปกติ / (วิ่งปกติ + ลา + หยุดพักปกติ)</p>
                 </div>
                 
                 <div class="relative w-48 h-48 flex items-center justify-center">
                     <canvas id="overallChart" class="absolute inset-0"></canvas>
                     <div class="text-center z-10">
                         <span id="overallPercentage" class="text-3xl font-extrabold text-slate-800">-</span>
-                        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">พร้อมวิ่งงาน</p>
+                        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">อัตรา SLA</p>
                     </div>
                 </div>
 
                 <div class="w-full grid grid-cols-2 gap-2 mt-4 text-center border-t border-slate-50 pt-3">
                     <div>
-                        <span class="text-xs text-slate-400 block">วิ่งปกติ</span>
+                        <span class="text-xs text-slate-400 block">วิ่งงานปกติ</span>
                         <span id="legendReady" class="text-sm font-semibold text-emerald-600">- คัน</span>
                     </div>
                     <div>
-                        <span class="text-xs text-slate-400 block">อื่นๆ</span>
+                        <span class="text-xs text-slate-400 block">กำลังพลอื่นๆ</span>
                         <span id="legendUnready" class="text-sm font-semibold text-rose-500">- คัน</span>
                     </div>
                 </div>
@@ -231,7 +231,7 @@
             <div class="bg-white p-5 lg:p-6 rounded-2xl border border-slate-200/80 shadow-sm lg:col-span-2 flex flex-col justify-between min-h-[350px]">
                 <div>
                     <h3 class="font-bold text-slate-800 text-sm">2. ความพร้อมวิ่งงานแยกตามประเภทรถ (%)</h3>
-                    <p class="text-xs text-slate-400 mb-4">สัดส่วนความพร้อมให้บริการแยกประเภทรถตามแผนงาน</p>
+                    <p class="text-xs text-slate-400 mb-4">สัดส่วนความพร้อมให้บริการแยกประเภทรถตามสูตรมาตรฐาน SLA ใหม่</p>
                 </div>
                 <div class="flex-1 min-h-[220px] relative">
                     <canvas id="typeChart"></canvas>
@@ -247,7 +247,10 @@
                         <i data-lucide="clipboard-list" class="w-5 h-5 text-blue-600"></i>
                         3. ตารางข้อมูลจำนวนรถของ Vendor แยกสถานะความพร้อมวิ่งงาน
                     </h3>
-                    <p class="text-xs text-slate-500 mt-1">แบ่งช่องสถานะละเอียด: พร้อมวิ่งงาน, รถลา, รถซ่อม, รถไม่มีคนขับ และคำนวณเป้าหมาย SLA 95% แยกรายผู้ให้บริการ</p>
+                    <p class="text-xs text-slate-500 mt-1">
+                        <b>รถพร้อมวิ่งงาน (คัน)</b> = รถวิ่งงานปกติ + ลากิจ + ลาป่วย + หยุดพักปกติ | 
+                        <b>SLA %</b> = รถวิ่งงานปกติ / รถพร้อมวิ่งงาน
+                    </p>
                 </div>
 
                 <!-- Custom Inline Filters for Section 3 -->
@@ -281,7 +284,8 @@
                     <thead class="bg-slate-50 text-xs text-slate-600 uppercase font-bold border-b border-slate-200">
                         <tr>
                             <th class="px-6 py-4 font-bold text-slate-700">ผู้ให้บริการ (Vendor)</th>
-                            <th class="px-4 py-4 text-center font-bold text-emerald-700 bg-emerald-50/50">รถพร้อมวิ่งงาน (คัน)</th>
+                            <th class="px-4 py-4 text-center font-bold text-emerald-700 bg-emerald-50">รถวิ่งงานปกติ (คัน)</th>
+                            <th class="px-4 py-4 text-center font-bold text-blue-700 bg-blue-50">รถพร้อมวิ่งงาน (คัน)</th>
                             <th class="px-4 py-4 text-center font-bold text-amber-700 bg-amber-50/50">รถลา (คัน)</th>
                             <th class="px-4 py-4 text-center font-bold text-rose-700 bg-rose-50/50">รถซ่อม (คัน)</th>
                             <th class="px-4 py-4 text-center font-bold text-indigo-700 bg-indigo-50/50">รถไม่มีคนขับ (คัน)</th>
@@ -293,7 +297,7 @@
                     </thead>
                     <tbody id="vendorStatusTableBody" class="divide-y divide-slate-200 text-slate-700">
                         <tr>
-                            <td colspan="9" class="px-6 py-8 text-center text-slate-400">
+                            <td colspan="10" class="px-6 py-8 text-center text-slate-400">
                                 <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i>
                                 กำลังประมวลผลตารางแยกสถานะ...
                             </td>
@@ -402,7 +406,7 @@
             </div>
         </section>
 
-        <!-- NEW: 6. Ready Vehicles Table List (Sorted by vehicle type priority) -->
+        <!-- 6. Ready Vehicles Table List (Sorted by vehicle type priority) -->
         <section class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
             <div class="p-5 lg:p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
                 <div>
@@ -723,7 +727,7 @@
 19/05/2026,CDC,CDC CB,TNP,รถในโครงการ,รถในกอง,2019-05-21,7,ปกติ,ยง-6599,ยง-6599 เชียงใหม่,เชียงใหม่,C-4W H1.9,สิทธิกร เขียวธง,-,วิ่งงานปกติ,วิ่งงานปกติ,-,-,-,-
 19/05/2026,CDC,CDC CB,TNP,รถในโครงการ,รถในกอง,2019-05-21,7,ปกติ,ยง-6607,ยง-6607 เชียงใหม่,เชียงใหม่,C-4W H1.9,กฤษณะ จงเจริญ,-,วิ่งงานปกติ,วิ่งงานปกติ,-,-,-,-
 19/05/2026,CDC,CDC CB,TNP,รถในโครงการ,รถในกอง,2019-05-21,7,ปกติ,ยง-6609,ยง-6609 เชียงใหม่,เชียงใหม่,C-4W H1.9,วิเชษฐ์  ทองดี,-,วิ่งงานปกติ,วิ่งงานปกติ,-,-,-,-
-19/05/2026,CDC,CDC CB,TNP,รถในโครงการ,รถในกอง,2019-05-21,7,ปกติ,ยง-6618,ยง-6618 เชียงใหม่,เชียงใหม่,C-4W H1.9,ภารดร เขียวธง,-,ซ่อมบำมรุง,ซ่อมบำรุง,-,-,เข้าอู่ซ่อมเกียร์,-
+19/05/2026,CDC,CDC CB,TNP,รถในโครงการ,รถในกอง,2019-05-21,7,ปกติ,ยง-6618,ยง-6618 เชียงใหม่,เชียงใหม่,C-4W H1.9,ภารดร เขียวธง,-,ซ่อมบำรุง,ซ่อมบำรุง,-,-,เข้าอู่ซ่อมเกียร์,-
 19/05/2026,CDC,CDC CB,MML,รถในโครงการ,รถในกอง,2018-02-14,8,มากกว่า 7 ปี (8 ปี),ยข-8153,ยข-8153 เชียงใหม่,เชียงใหม่,C-4WJ,สมพงษ์ แก้วเกย,-,วิ่งงานปกติ,วิ่งงานปกติ,-,-,-,-
 19/05/2026,CDC,CDC CB,KRL,รถในโครงการ,รถในกอง,2021-11-10,5,ปกติ,70-9821,70-9821 สมุทรสาคร,สมุทรสาคร,C-4W H1.9,ชูเกียรติ ยิ้มหวาน,-,วิ่งงานปกติ,วิ่งงานปกติ,-,-,-,-
 19/05/2026,CDC,CDC CB,KRL,รถในโครงการ,รถในกอง,2021-11-10,5,ปกติ,70-9821,70-9821 สมุทรสาคร,สมุทรสาคร,C-4W H1.9,ชูเกียรติ ยิ้มหวาน,-,วิ่งงานปกติ,วิ่งงานปกติ,-,-,-,- (ซ้ำทดสอบ)
@@ -1098,22 +1102,46 @@ fetch(sheetURL)
             const readyPercent = total > 0 ? ((ready / total) * 100).toFixed(1) : 0;
             const unreadyPercent = total > 0 ? ((unready / total) * 100).toFixed(1) : 0;
 
+            // NEW SLA Calculation globally
+            let globalRunNormal = 0;
+            let globalLaKit = 0;
+            let globalLaPuay = 0;
+            let globalYutPhak = 0;
+
+            filteredData.forEach(row => {
+                const plan = (row['แผนงาน (Plan)'] || '').trim();
+                if (plan === READY_STATUS) {
+                    globalRunNormal++;
+                } else if (plan.includes('ลากิจ')) {
+                    globalLaKit++;
+                } else if (plan.includes('ลาป่วย')) {
+                    globalLaPuay++;
+                } else if (plan.includes('หยุดพักปกติ') || plan.includes('หยุดพัก') || plan.includes('หยุด')) {
+                    globalYutPhak++;
+                }
+            });
+
+            const globalReadyDenominator = globalRunNormal + globalLaKit + globalLaPuay + globalYutPhak;
+            const globalSlaPercent = globalReadyDenominator > 0 ? ((globalRunNormal / globalReadyDenominator) * 100).toFixed(1) : "0.0";
+
             document.getElementById('kpiTotal').innerText = total.toLocaleString();
             document.getElementById('kpiReady').innerText = ready.toLocaleString();
             document.getElementById('kpiUnready').innerText = unready.toLocaleString();
             
-            document.getElementById('kpiReadyPercent').innerText = `${readyPercent}% จากแผนงานทั้งหมด`;
+            document.getElementById('kpiReadyPercent').innerText = `${readyPercent}% ของรถนำมาวางแผน`;
             document.getElementById('kpiUnreadyPercent').innerText = `${unreadyPercent}% มีปัญหาการจัดส่ง/เสีย`;
 
-            document.getElementById('overallPercentage').innerText = `${readyPercent}%`;
-            document.getElementById('legendReady').innerText = `${ready} คัน`;
-            document.getElementById('legendUnready').innerText = `${unready} คัน`;
+            // Display standard SLA inside KPI Standard and overall gauge center
+            document.getElementById('kpiSlaValue').innerText = `${globalSlaPercent}%`;
+            document.getElementById('overallPercentage').innerText = `${globalSlaPercent}%`;
+            document.getElementById('legendReady').innerText = `${globalRunNormal} คัน`;
+            document.getElementById('legendUnready').innerText = `${globalReadyDenominator - globalRunNormal} คัน`;
 
             const slaStatus = document.getElementById('kpiSlaStatus');
-            if (total === 0) {
+            if (globalReadyDenominator === 0) {
                 slaStatus.className = "text-xs text-slate-400 font-medium flex items-center gap-1";
-                slaStatus.innerHTML = `<i data-lucide="minus" class="w-3.5 h-3.5"></i> ไม่มีแผนวิ่งงานในระบบ`;
-            } else if (readyPercent >= 95.0) {
+                slaStatus.innerHTML = `<i data-lucide="minus" class="w-3.5 h-3.5"></i> ไม่มีรถพร้อมวิ่งในระบบ`;
+            } else if (parseFloat(globalSlaPercent) >= 95.0) {
                 slaStatus.className = "text-xs text-emerald-600 font-semibold flex items-center gap-1 animate-pulse";
                 slaStatus.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5"></i> ผ่านเกณฑ์มาตรฐานภาพรวม`;
             } else {
@@ -1127,9 +1155,27 @@ fetch(sheetURL)
         function renderCharts() {
             if (document.getElementById('dashboardView').classList.contains('hidden')) return;
 
-            const total = filteredData.length;
-            const ready = filteredData.filter(r => r['แผนงาน (Plan)'] === READY_STATUS).length;
-            const unready = total - ready;
+            // Dynamic SLA-based chart stats
+            let globalRunNormal = 0;
+            let globalLaKit = 0;
+            let globalLaPuay = 0;
+            let globalYutPhak = 0;
+
+            filteredData.forEach(row => {
+                const plan = (row['แผนงาน (Plan)'] || '').trim();
+                if (plan === READY_STATUS) {
+                    globalRunNormal++;
+                } else if (plan.includes('ลากิจ')) {
+                    globalLaKit++;
+                } else if (plan.includes('ลาป่วย')) {
+                    globalLaPuay++;
+                } else if (plan.includes('หยุดพักปกติ') || plan.includes('หยุดพัก') || plan.includes('หยุด')) {
+                    globalYutPhak++;
+                }
+            });
+
+            const readyDenominator = globalRunNormal + globalLaKit + globalLaPuay + globalYutPhak;
+            const restOfReady = readyDenominator - globalRunNormal;
 
             // --- 1. OVERALL GAUGE CHART ---
             if (charts.overall) charts.overall.destroy();
@@ -1137,10 +1183,10 @@ fetch(sheetURL)
             charts.overall = new Chart(overallCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['พร้อมวิ่งงานปกติ', 'ไม่พร้อม/หยุด/อื่นๆ'],
+                    labels: ['วิ่งงานปกติ', 'ลากิจ+ลาป่วย+หยุดพักปกติ'],
                     datasets: [{
-                        data: total > 0 ? [ready, unready] : [0, 1],
-                        backgroundColor: total > 0 ? ['#10b981', '#f43f5e'] : ['#e2e8f0', '#cbd5e1'],
+                        data: readyDenominator > 0 ? [globalRunNormal, restOfReady] : [0, 1],
+                        backgroundColor: readyDenominator > 0 ? ['#10b981', '#fbbf24'] : ['#e2e8f0', '#cbd5e1'],
                         borderWidth: 2,
                         borderColor: '#ffffff',
                         hoverOffset: 4
@@ -1154,9 +1200,9 @@ fetch(sheetURL)
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    if (total === 0) return ' ไม่มีข้อมูล';
+                                    if (readyDenominator === 0) return ' ไม่มีข้อมูล';
                                     const value = context.raw || 0;
-                                    const pct = ((value / total) * 100).toFixed(1);
+                                    const pct = ((value / readyDenominator) * 100).toFixed(1);
                                     return ` ${context.label}: ${value} คัน (${pct}%)`;
                                 }
                             }
@@ -1174,13 +1220,31 @@ fetch(sheetURL)
 
             types.forEach(type => {
                 const subset = filteredData.filter(r => r['ประเภทรถ'] === type);
-                const subTotal = subset.length;
-                const subReady = subset.filter(r => r['แผนงาน (Plan)'] === READY_STATUS).length;
-                const pct = subTotal > 0 ? Math.round((subReady / subTotal) * 100) : 0;
+                
+                let typeRun = 0;
+                let typeLaKit = 0;
+                let typeLaPuay = 0;
+                let typeYut = 0;
+
+                subset.forEach(row => {
+                    const plan = (row['แผนงาน (Plan)'] || '').trim();
+                    if (plan === READY_STATUS) {
+                        typeRun++;
+                    } else if (plan.includes('ลากิจ')) {
+                        typeLaKit++;
+                    } else if (plan.includes('ลาป่วย')) {
+                        typeLaPuay++;
+                    } else if (plan.includes('หยุดพักปกติ') || plan.includes('หยุดพัก') || plan.includes('หยุด')) {
+                        typeYut++;
+                    }
+                });
+
+                const denominator = typeRun + typeLaKit + typeLaPuay + typeYut;
+                const pct = denominator > 0 ? Math.round((typeRun / denominator) * 100) : 0;
                 
                 typeLabels.push(type);
                 typeReadyPercentages.push(pct);
-                typeTotalCounts.push(subTotal);
+                typeTotalCounts.push(denominator);
             });
 
             if (charts.type) charts.type.destroy();
@@ -1190,7 +1254,7 @@ fetch(sheetURL)
                 data: {
                     labels: typeLabels,
                     datasets: [{
-                        label: 'เปอร์เซ็นต์รถพร้อมวิ่งงาน (%)',
+                        label: 'เปอร์เซ็นต์ SLA (%)',
                         data: typeReadyPercentages,
                         backgroundColor: typeReadyPercentages.map(p => p >= 95 ? 'rgba(16, 185, 129, 0.85)' : 'rgba(244, 63, 94, 0.85)'),
                         borderColor: typeReadyPercentages.map(p => p >= 95 ? '#10b981' : '#f43f5e'),
@@ -1207,7 +1271,7 @@ fetch(sheetURL)
                             min: 0,
                             max: 100,
                             grid: { borderDash: [4, 4] },
-                            title: { display: true, text: 'เปอร์เซ็นต์ (%)', font: { family: 'Sarabun' } }
+                            title: { display: true, text: 'เปอร์เซ็นต์ SLA (%)', font: { family: 'Sarabun' } }
                         },
                         x: {
                             grid: { display: false }
@@ -1219,7 +1283,7 @@ fetch(sheetURL)
                             callbacks: {
                                 label: function(context) {
                                     const index = context.dataIndex;
-                                    return ` พร้อมวิ่ง: ${context.raw}% (จากทั้งหมด ${typeTotalCounts[index]} คัน)`;
+                                    return ` อัตรา SLA: ${context.raw}% (ตัวหารพร้อมวิ่งรวม: ${typeTotalCounts[index]} คัน)`;
                                 }
                             }
                         }
@@ -1228,7 +1292,7 @@ fetch(sheetURL)
             });
         }
 
-        // --- Section 3 Render Vendor Status Table with Custom Filters ---
+        // --- NEW/UPDATED: Section 3 Render Vendor Status Table with Custom Filters ---
         window.renderVendorStatusTable = function() {
             const tableBody = document.getElementById('vendorStatusTableBody');
             
@@ -1274,7 +1338,7 @@ fetch(sheetURL)
             if (vendors.length === 0) {
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="9" class="px-6 py-10 text-center text-slate-400 font-medium">
+                        <td colspan="10" class="px-6 py-10 text-center text-slate-400 font-medium">
                             ไม่พบข้อมูลตามเงื่อนไขตัวกรองของตารางนี้
                         </td>
                     </tr>
@@ -1285,7 +1349,8 @@ fetch(sheetURL)
             let rowsHtml = '';
             
             // Grand totals initialization
-            let gReady = 0;
+            let gRunNormal = 0;
+            let gReadyTotal = 0;
             let gLeave = 0;
             let gRepair = 0;
             let gNoDriver = 0;
@@ -1295,18 +1360,29 @@ fetch(sheetURL)
             vendors.forEach(vendor => {
                 const vData = dataset.filter(r => r['Vendor'] === vendor);
                 
-                let readyCount = 0;   // วิ่งงานปกติ
-                let leaveCount = 0;   // ลาป่วย / ลากิจ
-                let repairCount = 0;  // ซ่อมบำรุง
-                let noDriverCount = 0; // ไม่มีคนขับ
-                let othersCount = 0;  // สถานะอื่นๆ นอกเหนือจาก 4 ประเภทนี้
+                let runNormalCount = 0;  // รถวิ่งงานปกติ (ยึดตาม Plan = วิ่งงานปกติ)
+                let laKitCount = 0;     // ลากิจ
+                let laPuayCount = 0;    // ลาป่วย
+                let laTotalCount = 0;   // รถลา (ลากิจ + ลาป่วย + ลาอื่นๆ)
+                let yutPhakCount = 0;   // หยุดพักปกติ
+                let repairCount = 0;    // รถซ่อม (ซ่อมบำรุง)
+                let noDriverCount = 0;  // รถไม่มีคนขับ
+                let othersCount = 0;    // อื่นๆ
 
                 vData.forEach(row => {
                     const plan = (row['แผนงาน (Plan)'] || '').trim();
                     if (plan === READY_STATUS) {
-                        readyCount++;
+                        runNormalCount++;
+                    } else if (plan.includes('ลากิจ')) {
+                        laKitCount++;
+                        laTotalCount++;
+                    } else if (plan.includes('ลาป่วย')) {
+                        laPuayCount++;
+                        laTotalCount++;
                     } else if (plan.includes('ลา')) {
-                        leaveCount++;
+                        laTotalCount++;
+                    } else if (plan.includes('หยุดพักปกติ') || plan.includes('หยุดพัก') || plan.includes('หยุด')) {
+                        yutPhakCount++;
                     } else if (plan.includes('ซ่อม')) {
                         repairCount++;
                     } else if (plan.includes('ไม่มีคนขับ')) {
@@ -1316,8 +1392,12 @@ fetch(sheetURL)
                     }
                 });
 
-                const totalVendor = readyCount + leaveCount + repairCount + noDriverCount + othersCount;
-                const readyPercent = totalVendor > 0 ? ((readyCount / totalVendor) * 100).toFixed(1) : "0.0";
+                // RECALCULATED: รถพร้อมวิ่งงาน (คัน) = รถวิ่งงานปกติ + ลากิจ + ลาป่วย + หยุดพักปกติ
+                const readyTotalCount = runNormalCount + laKitCount + laPuayCount + yutPhakCount;
+                const totalVendorAll = runNormalCount + laTotalCount + yutPhakCount + repairCount + noDriverCount + othersCount;
+
+                // SLA % = วิ่งงานปกติ / รถพร้อมวิ่งงาน (คัน)
+                const readyPercent = readyTotalCount > 0 ? ((runNormalCount / readyTotalCount) * 100).toFixed(1) : "0.0";
                 
                 // SLA Requirement threshold is 95%
                 const isSlaPassed = parseFloat(readyPercent) >= 95.0;
@@ -1326,21 +1406,23 @@ fetch(sheetURL)
                     : `<span class="inline-flex items-center gap-1 bg-rose-100 text-rose-800 text-xs font-bold px-2.5 py-1 rounded-full"><i data-lucide="x" class="w-3.5 h-3.5"></i> ต่ำกว่าเกณฑ์</span>`;
 
                 // Update grand totals
-                gReady += readyCount;
-                gLeave += leaveCount;
+                gRunNormal += runNormalCount;
+                gReadyTotal += readyTotalCount;
+                gLeave += laTotalCount;
                 gRepair += repairCount;
                 gNoDriver += noDriverCount;
                 gOthers += othersCount;
-                gTotal += totalVendor;
+                gTotal += totalVendorAll;
 
                 rowsHtml += `<tr class="hover:bg-slate-50 transition duration-150">
                     <td class="px-6 py-4 font-bold text-slate-800">${vendor}</td>
-                    <td class="px-4 py-4 text-center font-bold text-emerald-600 bg-emerald-50/20">${readyCount.toLocaleString()}</td>
-                    <td class="px-4 py-4 text-center font-semibold text-amber-600 bg-amber-50/20">${leaveCount.toLocaleString()}</td>
+                    <td class="px-4 py-4 text-center font-bold text-emerald-600 bg-emerald-50/40">${runNormalCount.toLocaleString()}</td>
+                    <td class="px-4 py-4 text-center font-bold text-blue-600 bg-blue-50/40">${readyTotalCount.toLocaleString()}</td>
+                    <td class="px-4 py-4 text-center font-semibold text-amber-600 bg-amber-50/20">${laTotalCount.toLocaleString()}</td>
                     <td class="px-4 py-4 text-center font-semibold text-rose-600 bg-rose-50/20">${repairCount.toLocaleString()}</td>
                     <td class="px-4 py-4 text-center font-semibold text-indigo-600 bg-indigo-50/20">${noDriverCount.toLocaleString()}</td>
                     <td class="px-4 py-4 text-center text-slate-500">${othersCount.toLocaleString()}</td>
-                    <td class="px-4 py-4 text-center font-extrabold text-slate-900 bg-slate-50">${totalVendor.toLocaleString()}</td>
+                    <td class="px-4 py-4 text-center font-extrabold text-slate-900 bg-slate-50">${totalVendorAll.toLocaleString()}</td>
                     <td class="px-6 py-4 text-center">
                         <div class="flex items-center justify-center gap-2">
                             <span class="font-bold ${isSlaPassed ? 'text-emerald-600' : 'text-rose-600'}">${readyPercent}%</span>
@@ -1354,7 +1436,7 @@ fetch(sheetURL)
             });
 
             // Append Grand Total Row
-            const gPercent = gTotal > 0 ? ((gReady / gTotal) * 100).toFixed(1) : "0.0";
+            const gPercent = gReadyTotal > 0 ? ((gRunNormal / gReadyTotal) * 100).toFixed(1) : "0.0";
             const gPassed = parseFloat(gPercent) >= 95.0;
             const gBadge = gPassed
                 ? `<span class="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">ผ่านภาพรวม</span>`
@@ -1362,7 +1444,8 @@ fetch(sheetURL)
 
             rowsHtml += `<tr class="bg-slate-100 font-extrabold text-slate-900 border-t-2 border-slate-300">
                 <td class="px-6 py-4">ยอดรวมแผนกวิ่งรถทั้งหมด</td>
-                <td class="px-4 py-4 text-center text-emerald-700 bg-emerald-100/50">${gReady.toLocaleString()}</td>
+                <td class="px-4 py-4 text-center text-emerald-700 bg-emerald-100/50">${gRunNormal.toLocaleString()}</td>
+                <td class="px-4 py-4 text-center text-blue-700 bg-blue-100/50">${gReadyTotal.toLocaleString()}</td>
                 <td class="px-4 py-4 text-center text-amber-700 bg-amber-100/50">${gLeave.toLocaleString()}</td>
                 <td class="px-4 py-4 text-center text-rose-700 bg-rose-100/50">${gRepair.toLocaleString()}</td>
                 <td class="px-4 py-4 text-center text-indigo-700 bg-indigo-100/50">${gNoDriver.toLocaleString()}</td>
@@ -1529,7 +1612,7 @@ fetch(sheetURL)
             lucide.createIcons();
         }
 
-        // --- NEW: Section 6 Render Ready Vehicles List with sorting & custom inline filters ---
+        // --- Section 6 Render Ready Vehicles List with sorting & custom inline filters ---
         window.renderReadyVehiclesList = function() {
             const tableBody = document.getElementById('readyVehiclesTableBody');
             const tableCount = document.getElementById('sec6TableCount');
@@ -1541,7 +1624,6 @@ fetch(sheetURL)
             const s6SearchText = document.getElementById('sec6PlateSearch').value.toLowerCase().trim();
 
             // Rule: Base only ready vehicles ("วิ่งงานปกติ") and apply global deduplicated data (filteredData)
-            // or from fullData to allow dynamic filter override. Let's use filteredData as base to keep deduplication intact.
             let list = filteredData.filter(r => r['แผนงาน (Plan)'] === READY_STATUS);
 
             // Apply section 6 local overrides
