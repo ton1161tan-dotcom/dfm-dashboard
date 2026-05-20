@@ -83,7 +83,7 @@
                 <i data-lucide="info" class="w-5 h-5 text-blue-600 mt-0.5 shrink-0"></i>
                 <div class="text-sm text-blue-900">
                     <span class="font-semibold">ระบบจัดเก็บข้อมูลออนไลน์:</span> คุณสามารถอัปโหลดไฟล์แผนงานและคลิก <b>"แชร์ข้อมูลขึ้นคลาวด์"</b> เพื่ออัปเดตข้อมูลแบบสดใหม่ให้ทีมงานทุกคนเปิดดูพร้อมกันได้แบบ Real-time 
-                    (ประเมินทะเบียนไม่ซ้ำ และยึดสถานะ <b>"วิ่งงานปกติ"</b> โดยแต่ละ Vendor ต้องมีอัตราวิ่งงานปกติไม่ต่ำกว่า <b>85%</b> ของรถพร้อมวิ่งงาน)
+                    (ประเมินทะเบียนไม่ซ้ำโดย<b>ให้ความสำคัญกับคีย์สถานะ "วิ่งงานปกติ" เป็นหลัก</b> และคำนวณมาตรฐาน SLA 85% ของรถพร้อมวิ่งงาน)
                 </div>
             </div>
             <!-- Save Online Trigger Button -->
@@ -146,7 +146,7 @@
                     <span class="text-xs font-semibold text-slate-500 tracking-wider">จำนวนรถแผนงานทั้งหมด</span>
                     <h3 id="kpiTotal" class="text-3xl font-extrabold text-slate-900">-</h3>
                     <p class="text-xs text-slate-400 flex items-center gap-1">
-                        <i data-lucide="hash" class="w-3 h-3"></i> ทะเบียนไม่ซ้ำกัน
+                        <i data-lucide="hash" class="w-3 h-3"></i> ทะเบียนไม่ซ้ำ (สิทธิ์หลัก "วิ่งงานปกติ")
                     </p>
                 </div>
                 <div class="p-3 bg-slate-100 rounded-xl text-slate-600">
@@ -249,7 +249,7 @@
                     </h3>
                     <p class="text-xs text-slate-500 mt-1">
                         <b>รถพร้อมวิ่งงาน (คัน)</b> = รถวิ่งงานปกติ + ลากิจ + ลาป่วย + หยุดพักปกติ | 
-                        <b>อัตราพร้อมวิ่งงานปกติ %</b> = รถวิ่งงานปกติ / รถพร้อมวิ่งงาน
+                        <b>อัตราพร้อมวิ่งงานปกติ %</b> = รถวิ่งงานปกติ / รถพร้อมวิ่งงาน (ยึดตามข้อมูลแถวเดี่ยวตามสิทธิ์ประเมิน)
                     </p>
                 </div>
 
@@ -406,20 +406,30 @@
             </div>
         </section>
 
-        <!-- 6. Ready Vehicles Table List (Sorted by vehicle type priority) -->
+        <!-- 6. Ready Vehicles Table List (Sorted by vehicle type priority with Remarks and toggle views) -->
         <section class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
             <div class="p-5 lg:p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
                 <div>
                     <h3 class="font-bold text-emerald-600 text-sm flex items-center gap-1.5">
                         <i data-lucide="check-square" class="w-4 h-4"></i> 6. ตารางแสดงข้อมูลทะเบียนรถพร้อมวิ่งงานแยกตาม Vendor (เรียงประเภทรถ 1. 4W 1.9 / 2. 4WJ / 3. 6W)
                     </h3>
-                    <p class="text-xs text-slate-400">แสดงรายชื่อเฉพาะรถที่มีสถานะ "วิ่งงานปกติ" โดยจัดเรียงลำดับประเภทรถตามเงื่อนไขที่กำหนดอย่างถูกต้อง</p>
+                    <p class="text-xs text-slate-400">แสดงรายชื่อเฉพาะรถพร้อมวิ่งสถานะ "วิ่งงานปกติ" และระบุข้อมูลหมายเหตุประกอบการคุมคิวรถ</p>
                 </div>
                 
-                <!-- Section 6 Dedicated Local Filters -->
-                <div class="flex flex-wrap items-center gap-2">
-                    <div class="text-xs font-semibold text-slate-400">ตัวกรองเฉพาะตาราง:</div>
-                    
+                <!-- Section 6 Dedicated Local Filters & Toggle View -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Toggle buttons for Table View vs Row View -->
+                    <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-sm">
+                        <button id="sec6ViewTableBtn" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white text-slate-800 shadow-sm transition flex items-center gap-1">
+                            <i data-lucide="table" class="w-3.5 h-3.5"></i> ตาราง
+                        </button>
+                        <button id="sec6ViewRowBtn" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-800 transition flex items-center gap-1">
+                            <i data-lucide="list" class="w-3.5 h-3.5"></i> แถวเรียง
+                        </button>
+                    </div>
+
+                    <div class="h-6 w-px bg-slate-200 hidden xl:block"></div>
+
                     <!-- Date Filter -->
                     <select id="sec6DateFilter" class="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500 transition">
                         <option value="ALL">ทุกวันที่</option>
@@ -447,7 +457,8 @@
                 </div>
             </div>
             
-            <div class="overflow-x-auto max-h-[400px]">
+            <!-- Standard Table Container View -->
+            <div id="readyVehiclesTableContainer" class="overflow-x-auto max-h-[400px]">
                 <table class="w-full text-sm text-left border-collapse">
                     <thead class="bg-emerald-50/50 text-xs text-emerald-800 uppercase font-bold sticky top-0 z-10 border-b border-emerald-100">
                         <tr>
@@ -457,18 +468,27 @@
                             <th class="px-6 py-3">ประเภทรถ (เรียงลำดับพิเศษ)</th>
                             <th class="px-6 py-3">ชื่อคนขับ</th>
                             <th class="px-6 py-3">สถานะแผนงาน (Plan)</th>
+                            <th class="px-6 py-3">หมายเหตุ (แผน)</th>
                             <th class="px-6 py-3">เส้นทาง (Route)</th>
                         </tr>
                     </thead>
                     <tbody id="readyVehiclesTableBody" class="divide-y divide-slate-100 text-slate-700">
                         <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-slate-400">
+                            <td colspan="8" class="px-6 py-8 text-center text-slate-400">
                                 <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-500"></i>
                                 กำลังประมวลผลข้อมูลรถพร้อมวิ่ง...
                             </td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Custom Horizontal Grouped Row List View (มุมมองทะเบียนรถแต่ละ Vendor เป็นแถวแนวนอน) -->
+            <div id="readyVehiclesRowContainer" class="hidden divide-y divide-slate-100 bg-white">
+                <div class="px-6 py-12 text-center text-slate-400">
+                    <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-500"></i>
+                    กำลังประมวลผลมุมมองแถวเรียง...
+                </div>
             </div>
         </section>
     </main>
@@ -718,6 +738,9 @@
 
         // Standardized ready state keyword from requirements
         const READY_STATUS = "วิ่งงานปกติ";
+        
+        // Active view layout for Section 6 (default = 'table')
+        let sec6ActiveView = 'table';
 
         // Prepopulate Mock Data so dashboard is complete instantly on loaded environment
         const MOCK_CSV_CONTENT = `วันที่,ประเภทคลัง,คลัง (DC),Vendor,ประเภทโครงการ,ประเภทกองรถ,ปีจดทะเบียน,อายุรถ (ปี),ตรวจสอบอายุรถ,ทะเบียนรถ,ทะเบียน (จังหวัด),จังหวัด,ประเภทรถ,ชื่อคนขับ,เส้นทาง (Route),แผนงาน (Plan),หน้างานจริง (Actual),วันที่กลับ (แผน),วันที่กลับ (จริง),หมายเหตุ (แผน),หมายเหตุ (จริง)
@@ -738,125 +761,8 @@
 20/05/2026,CDC,CDC CB,TNP,รถในโครงการ,รถในกอง,2019-05-21,7,ปกติ,ยง-6599,ยง-6599 เชียงใหม่,เชียงใหม่,C-4W H1.9,สิทธิกร เขียวธง,-,วิ่งงานปกติ,วิ่งงานปกติ,-,-,-,-
 20/05/2026,CDC,CDC CB,TNP,รถในโครงการ,รถในกอง,2019-05-21,7,ปกติ,ยง-6618,ยง-6618 เชียงใหม่,เชียงใหม่,C-4W H1.9,ภารดร เขียวธง,-,วิ่งงานปกติ,วิ่งงานปกติ,-,-,-,-`;
 
-        // Wait until document and Icons are fully ready to initialize
-        window.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            
-            // Start using Mock data
-            parseCSVData(MOCK_CSV_CONTENT);
-
-            // Set up input events for real CSV file imports
-            document.getElementById('csvFileInput').addEventListener('change', handleFileUpload);
-            
-            // Draggable dropzone listener 
-            const dropzone = document.getElementById('dropzone');
-            dropzone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropzone.classList.add('border-blue-500', 'bg-blue-900/60');
-            });
-            dropzone.addEventListener('dragleave', () => {
-                dropzone.classList.remove('border-blue-500', 'bg-blue-900/60');
-            });
-            dropzone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropzone.classList.remove('border-blue-500', 'bg-blue-900/60');
-                if (e.dataTransfer.files.length > 0) {
-                    const file = e.dataTransfer.files[0];
-                    if (file.type === "text/csv" || file.name.endsWith('.csv')) {
-                        processFile(file);
-                    } else {
-                        showNotification('กรุณาเลือกไฟล์รูปแบบ .csv เท่านั้น', 'error');
-                    }
-                }
-            });
-
-            // Set up Filter select changes listeners
-            document.getElementById('dateFilter').addEventListener('change', runFilterPipeline);
-            document.getElementById('vendorFilter').addEventListener('change', runFilterPipeline);
-            document.getElementById('typeFilter').addEventListener('change', runFilterPipeline);
-            document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
-
-            // Set up Local Filters on Section 3 Status Table
-            document.getElementById('sec3DateFilter').addEventListener('change', renderVendorStatusTable);
-            document.getElementById('sec3TypeFilter').addEventListener('change', renderVendorStatusTable);
-            document.getElementById('sec3VendorFilter').addEventListener('change', renderVendorStatusTable);
-            document.getElementById('sec3ReadyFilter').addEventListener('change', renderVendorStatusTable);
-
-            // Set up Local Filters on Section 5 Unready Table
-            document.getElementById('unreadyDateFilter').addEventListener('change', renderUnreadyList);
-            document.getElementById('unreadyTypeFilter').addEventListener('change', renderUnreadyList);
-            document.getElementById('unreadyVendorFilter').addEventListener('change', renderUnreadyList);
-            document.getElementById('unreadyStatusFilter').addEventListener('change', renderUnreadyList);
-            document.getElementById('unreadySearch').addEventListener('input', renderUnreadyList);
-
-            // Set up Local Filters on Section 6 Ready Vehicles Table
-            document.getElementById('sec6DateFilter').addEventListener('change', renderReadyVehiclesList);
-            document.getElementById('sec6VendorFilter').addEventListener('change', renderReadyVehiclesList);
-            document.getElementById('sec6TypeFilter').addEventListener('change', renderReadyVehiclesList);
-            document.getElementById('sec6PlateSearch').addEventListener('input', renderReadyVehiclesList);
-
-            // Tab toggling events
-            setupTabNavigation();
-
-            // Raw Data Table Events
-            document.getElementById('rawSearch').addEventListener('input', () => {
-                rawTablePage = 1;
-                filterAndRenderRawTable();
-            });
-            document.getElementById('rawPrevPage').addEventListener('click', () => {
-                if (rawTablePage > 1) {
-                    rawTablePage--;
-                    renderRawTable();
-                }
-            });
-            document.getElementById('rawNextPage').addEventListener('click', () => {
-                const maxPage = Math.ceil(rawFilteredData.length / rawTableLimit);
-                if (rawTablePage < maxPage) {
-                    rawTablePage++;
-                    renderRawTable();
-                }
-            });
-        });
-
-        // Tab Switching Management
-        function setupTabNavigation() {
-            const tabDashboard = document.getElementById('tabDashboard');
-            const tabRawData = document.getElementById('tabRawData');
-            const dashboardView = document.getElementById('dashboardView');
-            const rawDataView = document.getElementById('rawDataView');
-
-            tabDashboard.addEventListener('click', () => {
-                tabDashboard.className = "flex-1 sm:flex-initial px-4 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all bg-blue-600 text-white shadow-sm";
-                tabRawData.className = "flex-1 sm:flex-initial px-4 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all text-blue-200 hover:text-white";
-                
-                dashboardView.classList.remove('hidden');
-                rawDataView.classList.add('hidden');
-                
-                renderCharts();
-                renderVendorStatusTable();
-                renderReadyVehiclesList();
-            });
-
-            tabRawData.addEventListener('click', () => {
-                tabRawData.className = "flex-1 sm:flex-initial px-4 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all bg-blue-600 text-white shadow-sm";
-                tabDashboard.className = "flex-1 sm:flex-initial px-4 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all text-blue-200 hover:text-white";
-                
-                rawDataView.classList.remove('hidden');
-                dashboardView.classList.add('hidden');
-                
-                filterAndRenderRawTable();
-            });
-        }
-
-        // Parse local and dropped files helper
-        function handleFileUpload(e) {
-            const file = e.target.files[0];
-            if (file) {
-                processFile(file);
-            }
-        }
-
-        const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQjYnD-2MNjff6iU29tYpgg39tNIjxbhPeGiqQ9wm4ENdWj5p_T18azsMDKyrQzSMODxsNipEbLaAQ/pub?output=csv";
+        // Clean columns, remove BOM bytes, handle initial structure
+         const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQjYnD-2MNjff6iU29tYpgg39tNIjxbhPeGiqQ9wm4ENdWj5p_T18azsMDKyrQzSMODxsNipEbLaAQ/pub?output=csv";
 
 // โหลดข้อมูลอัตโนมัติจาก Google Sheets
 fetch(sheetURL)
@@ -899,73 +805,6 @@ fetch(sheetURL)
             'error'
         );
 
-    });
-        function processFile(file) {
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                encoding: "UTF-8",
-                complete: function(results) {
-                    if (results.data && results.data.length > 0) {
-                        parseCSVData(results.data);
-                        showNotification('นำเข้าไฟล์รายงานเรียบร้อยแล้ว! พร้อมส่งออกออนไลน์ได้ทันที', 'success');
-                    } else {
-                        showNotification('ไม่สามารถอ่านข้อมูล หรือไฟล์ว่างเปล่าได้', 'error');
-                    }
-                },
-                error: function(err) {
-                    showNotification('เกิดข้อผิดพลาดในการประมวลผลไฟล์: ' + err.message, 'error');
-                }
-            });
-        }
-
-        // Standard Notification helper
-        function showNotification(message, type = 'success') {
-            const colors = type === 'success' ? 'bg-emerald-600 border-emerald-400' : 'bg-rose-600 border-rose-400';
-            const notification = document.createElement('div');
-            notification.className = `fixed bottom-5 right-5 z-50 text-white font-medium text-sm px-6 py-4 rounded-xl shadow-2xl border flex items-center gap-3 animate-bounce ${colors}`;
-            
-            const iconName = type === 'success' ? 'check-circle' : 'alert-circle';
-            notification.innerHTML = `<i data-lucide="${iconName}" class="w-5 h-5"></i> <span>${message}</span>`;
-            
-            document.body.appendChild(notification);
-            lucide.createIcons();
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 3500);
-        }
-
-        // Reset Filter inputs 
-        function resetFilters() {
-            document.getElementById('dateFilter').value = 'ALL';
-            document.getElementById('vendorFilter').value = 'ALL';
-            document.getElementById('typeFilter').value = 'ALL';
-            
-            // Section 3 local filters reset
-            document.getElementById('sec3DateFilter').value = 'ALL';
-            document.getElementById('sec3TypeFilter').value = 'ALL';
-            document.getElementById('sec3VendorFilter').value = 'ALL';
-            document.getElementById('sec3ReadyFilter').value = 'ALL';
-
-            // Section 5 local filters reset
-            document.getElementById('unreadyDateFilter').value = 'ALL';
-            document.getElementById('unreadyTypeFilter').value = 'ALL';
-            document.getElementById('unreadyVendorFilter').value = 'ALL';
-            document.getElementById('unreadySearch').value = '';
-            document.getElementById('unreadyStatusFilter').value = 'ALL';
-
-            // Section 6 local filters reset
-            document.getElementById('sec6DateFilter').value = 'ALL';
-            document.getElementById('sec6VendorFilter').value = 'ALL';
-            document.getElementById('sec6TypeFilter').value = 'ALL';
-            document.getElementById('sec6PlateSearch').value = '';
-
-            runFilterPipeline();
-            showNotification('ล้างตัวกรองทั้งหมดเรียบร้อย', 'success');
-        }
-
-        // Clean columns, remove BOM bytes, handle initial structure
         function parseCSVData(input) {
             let dataArray = [];
             if (typeof input === 'string') {
@@ -1066,11 +905,12 @@ fetch(sheetURL)
                 return matchesDate && matchesVendor && matchesType;
             });
 
-            // Step 2: STRICT DEDUPLICATION (นับทะเบียนรถเป็น 1 เท่านั้นในวันเดียวกัน)
+            // Step 2: STRICT DEDUPLICATION (ยึดตามอันก่อนหน้า: คัดกรองข้อมูลทะเบียนรถซ้ำกัน ให้นับเป็นแค่ 1 เท่านั้น โดยให้ความสำคัญกับสถานะ "วิ่งงานปกติ" เสมอ)
             const uniqueMap = new Map();
             filtered.forEach(row => {
                 const compoundKey = `${row['วันที่']}_${row['ทะเบียนรถ']}`;
                 if (uniqueMap.has(compoundKey)) {
+                    // หากซ้ำกัน จะเลือกอัปเดตแถวที่เป็น "วิ่งงานปกติ" เข้าไปในระบบเท่านั้น
                     if (row['แผนงาน (Plan)'] === READY_STATUS) {
                         uniqueMap.set(compoundKey, row);
                     }
@@ -1102,7 +942,7 @@ fetch(sheetURL)
             const readyPercent = total > 0 ? ((ready / total) * 100).toFixed(1) : 0;
             const unreadyPercent = total > 0 ? ((unready / total) * 100).toFixed(1) : 0;
 
-            // NEW SLA Calculation globally
+            // SLA Calculation globally
             let globalRunNormal = 0;
             let globalLaKit = 0;
             let globalLaPuay = 0;
@@ -1302,7 +1142,7 @@ fetch(sheetURL)
             const s3Vendor = document.getElementById('sec3VendorFilter').value;
             const s3Ready = document.getElementById('sec3ReadyFilter').value;
 
-            // Apply Section 3 Specific Filters on the overall unique vehicle list
+            // Apply Section 3 Specific Filters on the overall unique vehicle list (ยึดตามความสำคัญ "วิ่งงานปกติ" เสมอ)
             const uniqueMap = new Map();
             window.fullData.forEach(row => {
                 const compoundKey = `${row['วันที่']}_${row['ทะเบียนรถ']}`;
@@ -1399,7 +1239,7 @@ fetch(sheetURL)
                 // SLA % = วิ่งงานปกติ / รถพร้อมวิ่งงาน (คัน)
                 const readyPercent = readyTotalCount > 0 ? ((runNormalCount / readyTotalCount) * 100).toFixed(1) : "0.0";
                 
-                // SLA Requirement threshold updated to 85%
+                // SLA Requirement threshold is 85%
                 const isSlaPassed = parseFloat(readyPercent) >= 85.0;
                 const statusBadge = isSlaPassed 
                     ? `<span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full"><i data-lucide="check" class="w-3.5 h-3.5"></i> ผ่านเกณฑ์</span>`
@@ -1535,7 +1375,7 @@ fetch(sheetURL)
             const localStatusFilter = document.getElementById('unreadyStatusFilter').value;
             const localSearchText = document.getElementById('unreadySearch').value.toLowerCase().trim();
 
-            // Step 1: Base list of unready vehicles
+            // Step 1: Base list of unready vehicles (ยึดตามข้อมูลประเมินแบบสิทธิ์วิ่งงานปกติ)
             let list = filteredData.filter(r => r['แผนงาน (Plan)'] !== READY_STATUS);
 
             // Step 2: Apply section-specific local filters (วันที่, ประเภทรถ, Vendor)
@@ -1612,18 +1452,15 @@ fetch(sheetURL)
             lucide.createIcons();
         }
 
-        // --- Section 6 Render Ready Vehicles List with sorting & custom inline filters ---
+        // --- NEW: Section 6 Render Ready Vehicles with dual-view support (Standard Table vs Horizontal Grouped Rows) ---
         window.renderReadyVehiclesList = function() {
-            const tableBody = document.getElementById('readyVehiclesTableBody');
-            const tableCount = document.getElementById('sec6TableCount');
-            
             // Get local filters for Section 6
             const s6Date = document.getElementById('sec6DateFilter').value;
             const s6Vendor = document.getElementById('sec6VendorFilter').value;
             const s6Type = document.getElementById('sec6TypeFilter').value;
             const s6SearchText = document.getElementById('sec6PlateSearch').value.toLowerCase().trim();
 
-            // Rule: Base only ready vehicles ("วิ่งงานปกติ") and apply global deduplicated data (filteredData)
+            // Rule: Base only ready vehicles ("วิ่งงานปกติ") and apply globally filtered deduplicated data (filteredData)
             let list = filteredData.filter(r => r['แผนงาน (Plan)'] === READY_STATUS);
 
             // Apply section 6 local overrides
@@ -1641,12 +1478,12 @@ fetch(sheetURL)
                     const plate = (r['ทะเบียนรถ'] || '').toLowerCase();
                     const driver = (r['ชื่อคนขับ'] || '').toLowerCase();
                     const route = (r['เส้นทาง (Route)'] || '').toLowerCase();
-                    return plate.includes(s6SearchText) || driver.includes(s6SearchText) || route.includes(s6SearchText);
+                    const remark = (r['หมายเหตุ (แผน)'] || '').toLowerCase();
+                    return plate.includes(s6SearchText) || driver.includes(s6SearchText) || route.includes(s6SearchText) || remark.includes(s6SearchText);
                 });
             }
 
-            // Custom sorting helper for vehicle type priority
-            // Order: 1. 4W 1.9 / 2. 4WJ / 3. 6W / 4. Others
+            // Custom sorting helper for vehicle type priority (1. 4W 1.9 / 2. 4WJ / 3. 6W / 4. Others)
             const getVehiclePriority = (type) => {
                 if (!type) return 99;
                 const upper = type.toUpperCase();
@@ -1672,12 +1509,23 @@ fetch(sheetURL)
             });
 
             // Update Counter
-            tableCount.innerHTML = `พบรถพร้อมวิ่งทั้งหมด <b class="text-emerald-600 font-bold text-sm">${list.length}</b> คัน`;
+            document.getElementById('sec6TableCount').innerHTML = `พบรถพร้อมวิ่งทั้งหมด <b class="text-emerald-600 font-bold text-sm">${list.length}</b> คัน`;
 
+            // Render view 1: Table view
+            renderReadyTableMode(list, getVehiclePriority);
+
+            // Render view 2: Row/Badge view grouped by Vendor
+            renderReadyRowMode(list, getVehiclePriority);
+        };
+
+        // Render Table View (Standard table columns)
+        function renderReadyTableMode(list, getVehiclePriority) {
+            const tableBody = document.getElementById('readyVehiclesTableBody');
+            
             if (list.length === 0) {
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-slate-400 font-medium">
+                        <td colspan="8" class="px-6 py-12 text-center text-slate-400 font-medium">
                             <div class="flex flex-col items-center justify-center gap-2">
                                 <i data-lucide="info" class="w-8 h-8 text-slate-300"></i>
                                 <span>ไม่พบข้อมูลรถพร้อมวิ่งปกติที่ตรงตามเงื่อนไขตัวกรองปัจจุบัน</span>
@@ -1689,10 +1537,10 @@ fetch(sheetURL)
                 return;
             }
 
-            // Fill rows
             let rowHtml = '';
             list.forEach(car => {
                 const type = car['ประเภทรถ'] || '-';
+                const remarkPlan = car['หมายเหตุ (แผน)'] || '-';
                 let typeBadgeColor = 'bg-slate-100 text-slate-700';
                 
                 const priority = getVehiclePriority(type);
@@ -1716,13 +1564,131 @@ fetch(sheetURL)
                             ${car['แผนงาน (Plan)']}
                         </span>
                     </td>
+                    <td class="px-6 py-3.5 text-xs text-slate-500 max-w-[150px] truncate" title="${remarkPlan}">${remarkPlan}</td>
                     <td class="px-6 py-3.5 text-xs text-slate-500 font-medium">${car['เส้นทาง (Route)'] || '-'}</td>
                 </tr>`;
             });
 
             tableBody.innerHTML = rowHtml;
             lucide.createIcons();
-        };
+        }
+
+        // Render Row View (Horizontal lists grouped by Vendor for quick scanning)
+        function renderReadyRowMode(list, getVehiclePriority) {
+            const rowContainer = document.getElementById('readyVehiclesRowContainer');
+            
+            if (list.length === 0) {
+                rowContainer.innerHTML = `
+                    <div class="px-6 py-12 text-center text-slate-400 font-medium">
+                        <div class="flex flex-col items-center justify-center gap-2">
+                            <i data-lucide="info" class="w-8 h-8 text-slate-300"></i>
+                            <span>ไม่พบข้อมูลทะเบียนรถพร้อมวิ่งสำหรับแสดงผลในมุมมองแบบแถว</span>
+                        </div>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            // Group vehicles by Vendor
+            const vendorGroups = {};
+            list.forEach(car => {
+                const v = car['Vendor'] || 'ไม่ระบุ Vendor';
+                if (!vendorGroups[v]) {
+                    vendorGroups[v] = [];
+                }
+                vendorGroups[v].push(car);
+            });
+
+            let groupsHtml = '';
+            for (const [vendor, cars] of Object.entries(vendorGroups)) {
+                groupsHtml += `
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                            <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full"></span>
+                                ผู้ให้บริการ: <span class="text-blue-900">${vendor}</span>
+                            </h4>
+                            <span class="text-xs bg-slate-100 text-slate-600 font-semibold px-2.5 py-1 rounded-full">
+                                จำนวนรถพร้อมวิ่ง ${cars.length} คัน
+                            </span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 gap-2">
+                            ${cars.map(car => {
+                                const type = car['ประเภทรถ'] || '-';
+                                const remarkPlan = car['หมายเหตุ (แผน)'] || '-';
+                                let typeBadgeColor = 'bg-slate-100 text-slate-700 border border-slate-200';
+                                
+                                const priority = getVehiclePriority(type);
+                                if (priority === 1) typeBadgeColor = 'bg-blue-50 text-blue-700 border border-blue-200';
+                                else if (priority === 2) typeBadgeColor = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+                                else if (priority === 3) typeBadgeColor = 'bg-indigo-50 text-indigo-700 border border-indigo-200';
+
+                                return `
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between p-3.5 bg-slate-50 hover:bg-emerald-50/20 border border-slate-200/60 rounded-xl gap-3 transition">
+                                        <!-- Vehicle registration code and type details -->
+                                        <div class="flex flex-wrap items-center gap-3">
+                                            <span class="text-sm font-extrabold text-slate-900 bg-white border border-slate-200 px-3 py-1 rounded-lg shadow-sm">
+                                                ${car['ทะเบียนรถ']}
+                                            </span>
+                                            <span class="text-xs font-bold px-2 py-0.5 rounded-md ${typeBadgeColor}">
+                                                ${type}
+                                            </span>
+                                            <span class="text-xs text-slate-600 flex items-center gap-1">
+                                                <i data-lucide="user" class="w-3.5 h-3.5 text-slate-400"></i>
+                                                คนขับ: ${car['ชื่อคนขับ'] || '-'}
+                                            </span>
+                                            <span class="text-xs text-slate-500 flex items-center gap-1">
+                                                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-400"></i>
+                                                เส้นทาง: ${car['เส้นทาง (Route)'] || '-'}
+                                            </span>
+                                            <span class="text-xs text-slate-400">
+                                                วันที่: ${car['วันที่']}
+                                            </span>
+                                        </div>
+
+                                        <!-- Remarks panel -->
+                                        <div class="flex items-center gap-2 self-start md:self-auto min-w-0 max-w-full">
+                                            ${remarkPlan !== '-' ? `
+                                                <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 text-xs px-2.5 py-1 rounded-lg border border-amber-200 font-semibold" title="${remarkPlan}">
+                                                    <i data-lucide="message-square" class="w-3.5 h-3.5 text-amber-500 shrink-0"></i>
+                                                    หมายเหตุ: ${remarkPlan}
+                                                </span>
+                                            ` : `
+                                                <span class="text-xs text-slate-300 font-medium italic">ไม่มีหมายเหตุ</span>
+                                            `}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            rowContainer.innerHTML = groupsHtml;
+            lucide.createIcons();
+        }
+
+        // Bind layout toggle buttons on Section 6
+        document.getElementById('sec6ViewTableBtn').addEventListener('click', () => {
+            sec6ActiveView = 'table';
+            document.getElementById('sec6ViewTableBtn').className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-white text-slate-800 shadow-sm transition flex items-center gap-1";
+            document.getElementById('sec6ViewRowBtn').className = "px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-800 transition flex items-center gap-1";
+            
+            document.getElementById('readyVehiclesTableContainer').classList.remove('hidden');
+            document.getElementById('readyVehiclesRowContainer').classList.add('hidden');
+        });
+
+        document.getElementById('sec6ViewRowBtn').addEventListener('click', () => {
+            sec6ActiveView = 'row';
+            document.getElementById('sec6ViewRowBtn').className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-white text-slate-800 shadow-sm transition flex items-center gap-1";
+            document.getElementById('sec6ViewTableBtn').className = "px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-800 transition flex items-center gap-1";
+            
+            document.getElementById('readyVehiclesTableContainer').classList.add('hidden');
+            document.getElementById('readyVehiclesRowContainer').classList.remove('hidden');
+        });
 
         // --- RAW DATA TAB PROCESSING PIPELINE ---
 
